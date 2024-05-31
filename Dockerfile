@@ -49,4 +49,4 @@ RUN \
 
 COPY ./config /config
 
-CMD exec /app/Jackett/jackett --NoRestart --NoUpdates -p $PORT
+CMD exec /app/Jackett/jackett --NoRestart --NoUpdates -p $PORT; tail -f /dev/null
