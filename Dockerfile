@@ -41,8 +41,8 @@ RUN wget -O flaresolverr.tar.gz https://github.com/FlareSolverr/FlareSolverr/rel
     && tar -xzf flaresolverr.tar.gz -C /FlareSolverr --strip-components 1 \
     && rm flaresolverr.tar.gz
 
-# Ensure scripts are executable
-RUN chmod +x /Jackett/jackett /FlareSolverr/dist/index.js
+# Ensure binaries are executable
+RUN chmod +x /Jackett/jackett /FlareSolverr/flaresolverr
 
 # Set environment variable to use invariant globalization
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
@@ -57,6 +57,7 @@ WORKDIR /Jackett
 EXPOSE 9117
 EXPOSE 8191
 
-# Define entry point for supervisor to handle multiple services
+# Define entry point for supervisor to handle both Jackett and FlareSolverr
 ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["supervisord", "-c", "/etc/supervisord.conf", "-n"]
+
