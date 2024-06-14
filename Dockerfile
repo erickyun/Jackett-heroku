@@ -24,7 +24,7 @@ RUN echo 'https://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositori
     nodejs \
     npm \
     wget \
-    unzip \
+    tar \
     && apk add --no-cache \
     openssl
 
@@ -35,10 +35,10 @@ RUN wget -O Jackett.tar.gz https://github.com/Jackett/Jackett/releases/download/
     && rm Jackett.tar.gz
 
 # Download and install FlareSolverr
-RUN wget -O flaresolverr.zip https://github.com/FlareSolverr/FlareSolverr/releases/download/v3.0.2/FlareSolverr-linux-x64.zip \
+RUN wget -O flaresolverr.tar.gz https://github.com/FlareSolverr/FlareSolverr/releases/download/v3.3.19/flaresolverr_linux_x64.tar.gz \
     && mkdir -p /FlareSolverr \
-    && unzip flaresolverr.zip -d /FlareSolverr \
-    && rm flaresolverr.zip
+    && tar -xzf flaresolverr.tar.gz -C /FlareSolverr --strip-components 1 \
+    && rm flaresolverr.tar.gz
 
 # Set environment variable to use invariant globalization
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
