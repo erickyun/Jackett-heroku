@@ -25,6 +25,7 @@ RUN echo 'https://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositori
     npm \
     wget \
     tar \
+    supervisor \
     && apk add --no-cache \
     openssl
 
