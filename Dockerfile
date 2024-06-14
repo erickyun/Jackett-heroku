@@ -1,52 +1,42 @@
-FROM ghcr.io/linuxserver/baseimage-ubuntu:bionic
+FROM alpine:edge
 
-WORKDIR /app
+LABEL author="qwerty"
 
-# set version label
-ARG BUILD_DATE
-ARG VERSION
-ARG JACKETT_RELEASE
-LABEL build_version="Linuxserver.io version:- ${VERSION} Build-date:- ${BUILD_DATE}"
-LABEL maintainer="thelamer"
+# Update repositories and install dependencies
+RUN echo 'https://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories \
+    && echo 'https://nl.alpinelinux.org/alpine/edge/community' >> /etc/apk/repositories \
+    && apk update \
+    && apk add --no-cache \
+    ca-certificates \
+    libstdc++ \
+    libgcc \
+    krb5-libs \
+    gmp \
+    icu-libs \
+    libintl \
+    tzdata \
+    libcurl \
+    libuv \
+    libssl1.1 \
+    su-exec \
+    tini \
+    libc6-compat \
+    curl \
+    && apk add --no-cache \
+    openssl
 
-# environment settings
-ARG DEBIAN_FRONTEND="noninteractive"
-ENV XDG_DATA_HOME="/config" \
-XDG_CONFIG_HOME="/config" \
-PORT=9117
+# Download and extract Jackett binary
+RUN curl -L -o Jackett.tar.gz https://github.com/Jackett/Jackett/releases/download/v0.22.119/Jackett.Binaries.LinuxAMDx64.tar.gz \
+    && mkdir -p /Jackett \
+    && tar -xzf Jackett.tar.gz -C /Jackett --strip-components 1 \
+    && rm Jackett.tar.gz
 
-RUN \
- echo "**** install packages ****" && \
- apt-get update && \
- apt-get install -y \
-	jq \
-	libicu60 \
-	libssl1.0 \
-	wget && \
- echo "**** install jackett ****" && \
- mkdir -p \
-	/app/Jackett && \
- if [ -z ${JACKETT_RELEASE+x} ]; then \
-	JACKETT_RELEASE=$(curl -sX GET "https://api.github.com/repos/Jackett/Jackett/releases/latest" \
-	| jq -r .tag_name); \
- fi && \
- curl -o \
- /tmp/jacket.tar.gz -L \
-	"https://github.com/Jackett/Jackett/releases/download/${JACKETT_RELEASE}/Jackett.Binaries.LinuxAMDx64.tar.gz" && \
- tar xf \
- /tmp/jacket.tar.gz -C \
-	/app/Jackett --strip-components=1 && \
- echo "**** fix for host id mapping error ****" && \
- chown -R root:root /app/Jackett && \
- echo "**** save docker image version ****" && \
- echo "${VERSION}" > /etc/docker-image && \
- echo "**** cleanup ****" && \
- apt-get clean && \
- rm -rf \
-	/tmp/* \
-	/var/lib/apt/lists/* \
-	/var/tmp/*
+# Set working directory
+WORKDIR /Jackett
 
-COPY ./config /config
+# Expose required port
+EXPOSE 9117
 
-CMD exec /app/Jackett/jackett --NoRestart --NoUpdates -p 9117
+# Define entrypoint and command to run the Jackett binary
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["./jackett"]
