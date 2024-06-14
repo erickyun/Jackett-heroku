@@ -39,6 +39,9 @@ RUN curl -L -o flaresolverr.zip https://github.com/FlareSolverr/FlareSolverr/rel
     && unzip flaresolverr.zip -d /FlareSolverr \
     && rm flaresolverr.zip
 
+# Set environment variable to use invariant globalization
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
+
 # Copy supervisor configuration file
 COPY supervisord.conf /etc/supervisord.conf
 
@@ -50,4 +53,5 @@ EXPOSE 9117
 EXPOSE 8191
 
 # Define entry point for supervisor to handle multiple services
-ENTRYPOINT ["/sbin/tini", "--", "supervisord", "-c", "/etc/supervisord.conf"]
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["supervisord", "-c", "/etc/supervisord.conf", "-n"]
