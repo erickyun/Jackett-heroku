@@ -35,8 +35,7 @@ RUN wget -O Jackett.tar.gz https://github.com/Jackett/Jackett/releases/download/
     && rm Jackett.tar.gz
 
 # Download and install FlareSolverr
-# Replace FLARESOLVERR_DOWNLOAD_URL with the correct direct URL after verifying it
-RUN wget -O flaresolverr.zip https://github.com/FlareSolverr/FlareSolverr/releases/download/v0.9.3/FlareSolverr-linux.zip \
+RUN wget -O flaresolverr.zip https://github.com/FlareSolverr/FlareSolverr/releases/download/v3.0.2/FlareSolverr-linux-x64.zip \
     && mkdir -p /FlareSolverr \
     && unzip flaresolverr.zip -d /FlareSolverr \
     && rm flaresolverr.zip
