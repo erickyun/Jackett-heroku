@@ -23,18 +23,20 @@ RUN echo 'https://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositori
     libc6-compat \
     nodejs \
     npm \
-    curl \
+    wget \
+    unzip \
     && apk add --no-cache \
     openssl
 
 # Download and install Jackett binary
-RUN curl -L -o Jackett.tar.gz https://github.com/Jackett/Jackett/releases/download/v0.22.119/Jackett.Binaries.LinuxAMDx64.tar.gz \
+RUN wget -O Jackett.tar.gz https://github.com/Jackett/Jackett/releases/download/v0.22.119/Jackett.Binaries.LinuxAMDx64.tar.gz \
     && mkdir -p /Jackett \
     && tar -xzf Jackett.tar.gz -C /Jackett --strip-components 1 \
     && rm Jackett.tar.gz
 
 # Download and install FlareSolverr
-RUN curl -L -o flaresolverr.zip https://github.com/FlareSolverr/FlareSolverr/releases/latest/download/FlareSolverr-linux.zip \
+# Replace FLARESOLVERR_DOWNLOAD_URL with the correct direct URL after verifying it
+RUN wget -O flaresolverr.zip https://github.com/FlareSolverr/FlareSolverr/releases/download/v0.9.3/FlareSolverr-linux.zip \
     && mkdir -p /FlareSolverr \
     && unzip flaresolverr.zip -d /FlareSolverr \
     && rm flaresolverr.zip
